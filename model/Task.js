@@ -16,7 +16,7 @@ const TaskSchema = new Schema(
       required: true,
     },
     Task_members: {
-      type: [""],
+      type: String,
       required: true,
     },
     Sub_Tasks: {
@@ -27,7 +27,6 @@ const TaskSchema = new Schema(
       default: false,
     },
   },
-
   { timestamps: true }
 );
 module.exports = model("Tasks", TaskSchema);

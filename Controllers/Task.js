@@ -2,7 +2,6 @@ const ProjectSchema = require("../model/Project");
 const TaskSchema = require("../model/Task");
 const EmployeeSchema = require("../model/Employees");
 
-
 exports.getAllTask = async (req, res) => {
   try {
     let data = await taskSchema.find({});
@@ -43,31 +42,20 @@ exports.createTask = async (req, res) => {
       Sub_Tasks,
       Task_Status,
     };
-    let value = await TaskSchema.create(data);
     let { Task_Name } = await ProjectSchema.findOne({ Project_id });
-    let employee = await EmployeeSchema.find({
-      Employee_id: { $in: Task_members },
-    });
-      employee.forEach(v => {
-        await EmployeeSchema.findOneAndUpdate(
+    EmployeeSchema.findOneAndUpdate(
+      {
+        $and: [{ Employee_id: Task_members }, { Task_id: { $exists: false } }],
+      },
+      { $set: { Task_id: Task_id } }
+    )
+      .then(() => console.log("first"))
+      .catch(err => console.log(err));
+    await ProjectSchema.findOneAndUpdate(
       { Project_id },
       { Task_Name: [...Task_Name, Task_name] }
-      );
-    })
-
-    // await ProjectSchema.findOneAndUpdate(
-    //   { Project_id },
-    //   { Task_Name: [...Task_Name, Task_name] }
-    //   );
-    //   EmployeeSchema.updateMany(
-    //     { $match: { Project_Status: true } },
-    //     { Employee_id: { $in: Task_members } },
-    //     { Project_Name: Project_name } 
-    //   )
-    //     .then(() => {
-    //       console.log("success");
-    //     })
-    //     .catch(error => console.log(error));
+    );
+    let value = await TaskSchema.create(data);
     res.status(201).json({ message: "succesfully  created", value });
   } catch (err) {
     console.log(err);

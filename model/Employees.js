@@ -20,11 +20,11 @@ const EmployeeSchema = new Schema(
       enum: [true, false],
       default: false,
     },
-    Project_Name: {
+    Project_id: {
       type: String,
     },
-    Task_Name: {
-      type: [""],
+    Task_id: {
+      type: String,
     },
   },
 

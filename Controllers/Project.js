@@ -34,19 +34,11 @@ exports.createProject = async (req, res) => {
       Project_status,
       Team_members,
     };
+    console.log(Team_members);
     let value = await ProjectSchema.create(data);
-    let emp = await EmployeeSchema.find({}).lean();
-    // let newEmp = emp.map(v => {
-    //   if (Team_members.includes(v.Employee_id)) {
-    //     v.Project_Status = true;
-    //     v.Project_Name = Project_name;
-    //   }
-    //   return v;
-    // });
     EmployeeSchema.updateMany(
-      { $match: { Project_Status: false } },
-      { Employee_id: { $in: Team_members } },
-      { $set: { Project_Status: true, Project_Name: Project_name } }
+      {$and:[{ Employee_id: { $in: Team_members }},{Project_Status:false}]},
+      { $set: { Project_Status: true, Project_id: Project_id } }
     )
       .then(() => {
         console.log("success");
