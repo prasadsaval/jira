@@ -11,14 +11,10 @@ const Sub_TaskSchema = new Schema(
       required: true,
       unique: true,
     },
-    Project_id: {
-      type: String,
-      required: true,
-    },
+
     Task_id: {
       type: String,
       required: true,
-      unique: true,
     },
 
     Task_Status: {

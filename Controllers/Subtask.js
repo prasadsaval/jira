@@ -12,14 +12,16 @@ exports.getAllSub_Task = async (req, res) => {
 };
 
 //! get the  data
-// exports.getEmployee = async (req, res) => {
-//   try {
-//     let data = await ProjectSchema.findOne({ _id: req.params.id });
-//     res.status(200).json({ message: "fetched data Sucessfully", data });
-//   } catch (error) {
-//     res.status(501).json({ message: "SERVER ERROR" });
-//   }
-// };
+exports.getEmployee = async (req, res) => {
+  try {
+    let data = await Sub_TaskSchema.findOne({
+      Sub_Task_id: req.params.sub_Task_id,
+    });
+    res.status(200).json({ message: "fetched data Sucessfully", data });
+  } catch (error) {
+    res.status(501).json({ message: "SERVER ERROR" });
+  }
+};
 
 //! created the Employee data
 
@@ -27,12 +29,11 @@ exports.createSub_Task = async (req, res) => {
   try {
     console.log(req.body);
 
-    let { Sub_Task_name, Sub_Task_id, Project_id, Task_id, Task_Status } =
-      req.body;
+    let { Sub_Task_name, Sub_Task_id, Task_id, Task_Status } = req.body;
     let data = {
       Sub_Task_name,
       Sub_Task_id,
-      Project_id,
+
       Task_id,
       Task_Status,
     };
@@ -49,7 +50,7 @@ exports.createSub_Task = async (req, res) => {
 //! deleted the data
 // exports.deleteEmployee = async (req, res) => {
 //   try {
-//     await EmployeeSchema.findByIdAndDelete(req.params.id);
+//     await Sub_TaskSchema.findByIdAndDelete(req.params.id);
 //     res.status(201).json({ message: "successfully  Deleted" });
 //   } catch (error) {
 //     res.status(501).json({ message: "SERVER ERROR" });
@@ -57,31 +58,23 @@ exports.createSub_Task = async (req, res) => {
 // };
 
 //! update the
-// exports.updateEmployee = async (req, res) => {
-//   try {
-//     let {
-//       name,
-//       Employee_id,
-//       Employee_email,
-//       Project_Status,
-//       Project_Name,
-//       Task_Name,
-//     } = req.body;
-//     let data = await EmployeeSchema.findByIdAndUpdate(
-//       { _id: req.params.id },
-//       {
-//         name,
-//         Employee_id,
-//         Employee_email,
-//         Project_Status,
-//         Project_Name,
-//         Task_Name,
-//       },
-//       { new: true }
-//     );
-//     await data.save();
-//     res.status(201).json({ message: "Sucessfully  Updated", data });
-//   } catch (error) {
-//     res.status(501).json({ message: "server Error" });
-//   }
-// };
+exports.updateEmployee = async (req, res) => {
+  try {
+    let { Sub_Task_name, Sub_Task_id, Task_id, Task_Status } = req.body;
+    let data = await Sub_TaskSchema.findOneAndUpdate(
+      { Sub_Task_id: req.params.Sub_Task_id },
+      {
+        Sub_Task_name,
+        Sub_Task_id,
+        Task_id,
+        Task_Status,
+      },
+      { new: true }
+    );
+   await data.save();
+    res.status(201).json({ message: "Sucessfully  Updated", data });
+  } catch (error) {
+    res.status(501).json({ message: "server Error" });
+    console.log(error)
+  }
+};

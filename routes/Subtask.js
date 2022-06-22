@@ -2,19 +2,17 @@ const { Router } = require("express");
 const {
   createSub_Task,
   //   deleteEmployee,
-  //   updateEmployee,
+    updateEmployee,
   getAllSub_Task,
-  //   getEmployee,
+  getEmployee,
 } = require("../Controllers/Subtask");
 const router = Router();
 
 router.route("/getall").get(getAllSub_Task);
 router.route("/data").post(createSub_Task);
 
-// router
-//   .route("/:id")
-//   .get(getEmployee)
-//   .put(updateEmployee)
+router.route("/:Sub_Task_id").get(getEmployee)
+  .put(updateEmployee)
 //   .delete(deleteEmployee);
 
 module.exports = router;

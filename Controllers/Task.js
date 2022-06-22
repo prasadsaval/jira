@@ -45,18 +45,35 @@ exports.createTask = async (req, res) => {
     let { Task_Name } = await ProjectSchema.findOne({ Project_id });
     EmployeeSchema.findOneAndUpdate(
       {
-        $and: [{ Employee_id: Task_members }, { Task_id: { $exists: false } }],
+        $and: [
+          { Employee_id: Task_members },
+          { Task_id: { $exists: false } },
+          { Project_id: Project_id },
+        ],
       },
-      { $set: { Task_id: Task_id } }
-    )
-      .then(() => console.log("first"))
-      .catch(err => console.log(err));
+      { $set: { Task_id: Task_id } },
+     async function (err, docs) {
+        if (docs == null) {
+          res.status(501).json({ message: "Already working on some task" });
+          const e = new Error(`Data with ${data.input._id} not found.`);
+          throw e;
+        } else {
+          console.log("Updated User : ", docs);
+          let value = await TaskSchema.create(data);
     await ProjectSchema.findOneAndUpdate(
       { Project_id },
       { Task_Name: [...Task_Name, Task_name] }
+          );
+           res.status(201).json({ message: "succesfully  created", value });
+        }
+      }
     );
-    let value = await TaskSchema.create(data);
-    res.status(201).json({ message: "succesfully  created", value });
+
+    // .then(() => console.log("first"))
+
+    // .catch(err => console.log(err));
+    
+   
   } catch (err) {
     console.log(err);
 

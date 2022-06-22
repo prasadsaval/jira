@@ -49,7 +49,6 @@ exports.createEmployee = async (req, res) => {
     res.status(201).json({ message: "succesfully  created", value });
   } catch (err) {
     console.log(err);
-
     res.status(501).json({ message: "SERVER ERROR" });
   }
 };

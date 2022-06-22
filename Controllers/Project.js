@@ -34,18 +34,36 @@ exports.createProject = async (req, res) => {
       Project_status,
       Team_members,
     };
-    console.log(Team_members);
-    let value = await ProjectSchema.create(data);
-    EmployeeSchema.updateMany(
-      {$and:[{ Employee_id: { $in: Team_members }},{Project_Status:false}]},
-      { $set: { Project_Status: true, Project_id: Project_id } }
-    )
-      .then(() => {
-        console.log("success");
-      })
-      .catch(error => console.log(error));
+    //? if one employee present in other project then project not created
+    let a = await EmployeeSchema.find({
+      Employee_id: { $in: Team_members },
+    }).lean();
+    let ps = false;
+    a.map(element => {
+      if (element.Project_Status == true) ps = true;
+    });
 
-    res.status(201).json({ message: "succesfully  created", value });
+    if (ps == false) {
+      EmployeeSchema.updateMany(
+        { Employee_id: { $in: Team_members } },
+        { $set: { Project_Status: true, Project_id: Project_id } },
+        async function (err, docs) {
+          console.log(docs);
+          if (docs.modifiedCount == Team_members.length) {
+            console.log("Updated User : ", docs);
+            let value = await ProjectSchema.create(data);
+            res.status(201).json({ message: "succesfully  created", value });
+          }
+        }
+      );
+    } else {
+      res.status(501).json({
+        message:
+          "Invalid Employee id or employee is already working on other project",
+      });
+      const e = new Error(`Data with ${data.input._id} not found.`);
+      throw e;
+    }
   } catch (err) {
     console.log(err);
 
